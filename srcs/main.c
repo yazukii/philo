@@ -6,7 +6,7 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 15:17:39 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/12 16:04:37 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/12 20:42:26 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ int	main(int argc, char **argv)
 		i++;
 	}
 	i = 0;
-	while(i < philo.n_philo)
+	while (i < philo.n_philo)
 	{
 		init_data(&data[i], &philo, i);
-		data->left_fork = &forks[i];
+		data[i].left_fork = &forks[i];
 		if (i == 0)
-			data->right_fork = &forks[philo.n_philo - 1];
+			data[i].right_fork = &forks[philo.n_philo - 1];
 		else
-			data->right_fork = &forks[i - 1];
+			data[i].right_fork = &forks[i - 1];
 		i++;
 	}
 	i = 0;
@@ -51,6 +51,7 @@ int	main(int argc, char **argv)
 	while (i < philo.n_philo)
 	{
 		pthread_join(philos[i], NULL);
+		pthread_mutex_destroy(&forks[i]);
 		i++;
 	}
 	pthread_join(monitoring, NULL);
