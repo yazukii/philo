@@ -6,7 +6,7 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 15:17:39 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/17 19:03:31 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/26 17:43:56 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@ int	main(int argc, char **argv)
 	t_data			*data;
 	pthread_mutex_t	*forks;
 	pthread_t		*philos;
-	pthread_t		monitoring;
+	pthread_t		*monitoring;
+	pthread_t		time_eaten;
 	int				i;
 
 	i = 0;
 	data = malloc(sizeof(t_data) * ft_atoi(argv[1]));
 	philos = malloc(sizeof(pthread_mutex_t) * ft_atoi(argv[1]));
+	monitoring = malloc(sizeof(pthread_mutex_t) * ft_atoi(argv[1]));
 	forks = malloc(sizeof(pthread_t) * ft_atoi(argv[1]));
 	init_philo(&philo, argc, argv);
 	while (i < philo.n_philo)
@@ -44,9 +46,10 @@ int	main(int argc, char **argv)
 	}
 	i = 0;
 	philo.start_time = get_time();
+	pthread_create(&time_eaten, NULL, &num_eaten, &data);
 	while (i < philo.n_philo)
 	{
-		pthread_create(&monitoring, NULL, &monitor, &data[i]);
+		pthread_create(&monitoring[i], NULL, &monitor, &data[i]);
 		pthread_create(&philos[i], NULL, &routine, &data[i]);
 		i++;
 	}
@@ -54,12 +57,13 @@ int	main(int argc, char **argv)
 	while (i < philo.n_philo)
 	{
 		pthread_join(philos[i], NULL);
+		pthread_join(monitoring[i], NULL);
 		pthread_mutex_destroy(&forks[i]);
 		i++;
 	}
+	pthread_join(time_eaten, NULL);
 	free(data);
 	free(philos);
 	free(forks);
-	pthread_join(monitoring, NULL);
 	return (0);
 }

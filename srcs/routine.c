@@ -6,28 +6,26 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 17:07:37 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/24 15:59:51 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/26 18:19:56 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
 
-void	num_eaten(void *vdata)
+void	*num_eaten(void *vdata)
 {
 	t_data	*data;
 	int		i;
 
 	i = 0;
 	data = (t_data *)vdata;
-	while (i < data->philo->n_philo)
+	printf("n_philo = %d\n", data[1].philo->n_philo);
+	while (i < data[1].philo->n_philo)
 	{
-		if (data[i].n_eat > data[i].philo->need_eat - 1)
-			i++;
-		else
-			break ;
-		if (i == data->philo->n_philo)
-			exit(0);
+		i++;
+		//printf("i = %d\n", i);
 	}
+	return (NULL);
 }
 
 void	*monitor(void *vdata)
@@ -43,10 +41,9 @@ void	*monitor(void *vdata)
 	{
 		leat = data->last_eaten;
 		ttd = (u_int64_t)data->philo->time_to_die;
-		if (get_time() - leat > ttd && leat != 0 && data->is_eating == 0)
+		if (get_time() - leat > ttd && data->is_eating == 0)
 		{
 			printf("%llu %d died\n", get_time() - data->philo->start_time, data->id + 1);
-			data->dead = 1;
 			exit(0);
 		}
 		i++;
@@ -62,10 +59,8 @@ void	*routine(void *vdata)
 
 	data = (t_data *)vdata;
 	if (data->id % 2 == 0)
-	{
 		ft_sleep(data);
-	}
-	while (data->dead == 0)
+	while (1)
 	{
 		ft_eat(data);
 		ft_sleep(data);

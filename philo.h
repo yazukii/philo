@@ -6,7 +6,7 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/02 15:58:17 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/17 18:13:11 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/26 17:45:34 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ typedef struct s_data
 	u_int64_t			last_eaten;
 	t_philo				*philo;
 	int					id;
-	int					dead;
 	int					is_eating;
 	int					n_eat;
 }	t_data;
@@ -51,6 +50,7 @@ void		*routine(void *vdata);
 void		*monitor(void *vdata);
 int			ft_eat(void *vdata);
 int			ft_sleep(void *vdata);
+void		*num_eaten(void *vdata);
 int			ft_think(void *vdata);
 
 #endif
