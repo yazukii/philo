@@ -6,7 +6,7 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 17:07:37 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/12 20:53:06 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/24 15:59:51 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,16 @@ void	*monitor(void *vdata)
 	i = 0;
 	while (1)
 	{
-		while (i < data->philo->n_philo)
+		leat = data->last_eaten;
+		ttd = (u_int64_t)data->philo->time_to_die;
+		if (get_time() - leat > ttd && leat != 0 && data->is_eating == 0)
 		{
-			leat = data[i].last_eaten;
-			ttd = (u_int64_t)data[i].philo->time_to_die;
-			if (get_time() - leat > ttd && leat != 0 && data[i].is_eating == 0)
-			{
-				printf("%llu %d died\n", get_time() - data->philo->start_time, data->id + 1);
-				data[i].dead = 1;
-				exit(0);
-			}
-			i++;
+			printf("%llu %d died\n", get_time() - data->philo->start_time, data->id + 1);
+			data->dead = 1;
+			exit(0);
 		}
-		num_eaten(data);
+		i++;
+		//num_eaten(data);
 		i = 0;
 	}
 	return (NULL);
@@ -65,7 +62,9 @@ void	*routine(void *vdata)
 
 	data = (t_data *)vdata;
 	if (data->id % 2 == 0)
+	{
 		ft_sleep(data);
+	}
 	while (data->dead == 0)
 	{
 		ft_eat(data);
