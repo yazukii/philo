@@ -6,7 +6,7 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/01 15:17:39 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/26 17:43:56 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/04/27 22:24:16 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	main(int argc, char **argv)
 	pthread_mutex_t	*forks;
 	pthread_t		*philos;
 	pthread_t		*monitoring;
-	pthread_t		time_eaten;
 	int				i;
 
 	i = 0;
@@ -46,7 +45,6 @@ int	main(int argc, char **argv)
 	}
 	i = 0;
 	philo.start_time = get_time();
-	pthread_create(&time_eaten, NULL, &num_eaten, &data);
 	while (i < philo.n_philo)
 	{
 		pthread_create(&monitoring[i], NULL, &monitor, &data[i]);
@@ -61,7 +59,6 @@ int	main(int argc, char **argv)
 		pthread_mutex_destroy(&forks[i]);
 		i++;
 	}
-	pthread_join(time_eaten, NULL);
 	free(data);
 	free(philos);
 	free(forks);
