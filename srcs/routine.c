@@ -6,32 +6,11 @@
 /*   By: yidouiss <yidouiss@42lausanne.ch>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/03 17:07:37 by yidouiss          #+#    #+#             */
-/*   Updated: 2023/04/27 22:40:02 by yidouiss         ###   ########.fr       */
+/*   Updated: 2023/05/08 17:51:07 by yidouiss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../philo.h"
-
-void	num_eaten(void *vdata)
-{
-	t_data	*data;
-	int		i;
-
-	i = 0;
-	data = (t_data *)vdata;
-	while (i < data[0].philo.n_philo && data[i].philo.need_eat != -1)
-	{
-		if (data[i].n_eat > data[0].philo.need_eat - 1)
-			i++;
-		else
-			break ;
-		if (i == data[0].philo.n_philo)
-		{
-			printf("All philos ate %d times\n", data[0].philo.need_eat);
-			exit(0);
-		}	
-	}
-}
 
 void	*monitor(void *vdata)
 {
@@ -42,25 +21,29 @@ void	*monitor(void *vdata)
 	data = (t_data *)vdata;
 	while (1)
 	{
+		pthread_mutex_lock(data->death);
 		leat = data->last_eaten;
-		ttd = (u_int64_t)data->philo.time_to_die;
+		ttd = (u_int64_t)data->philo->time_to_die;
 		if (get_time() - leat > ttd && data->is_eating == 0)
-		{
-			printf("%llu %d died\n", get_time() - data->philo.start_time, data->id + 1);
-			exit(0);
-		}
-		num_eaten(data);
+			died(get_time() - data->philo->start_time, data->id);
+		pthread_mutex_unlock(data->death);
 	}
 	return (NULL);
 }
 
 void	*routine(void *vdata)
 {
+	time_t	strt;
 	t_data	*data;
-
 	data = (t_data *)vdata;
+	while (data->philo->go == 0)
+		usleep(1);
 	if (data->id % 2 == 0)
-		ft_sleep(data);
+	{
+		strt = data->philo->start_time;
+		printf("%llu %d is thinking\n", get_time() - strt, data->id + 1);
+		ft_usleep(data->philo->time_to_sleep);
+	}
 	while (1)
 	{
 		ft_eat(data);
